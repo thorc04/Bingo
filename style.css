@@ -5,7 +5,7 @@ body {
     flex-direction: column;
     align-items: center;
     background-color: #f8f8f8;
-    height: 100vh; /* Set full viewport height */
+    height: 100vh;
 }
 
 .header {
@@ -14,7 +14,7 @@ body {
     width: 100%;
     padding: 20px;
     text-align: center;
-    font-size: 24px; /* Adjusted header font size */
+    font-size: 24px;
 }
 
 .bingo-caller {
@@ -26,7 +26,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 600px; /* Set fixed width for bingo caller */
+    width: 600px;
 }
 
 #currentNumber {
@@ -72,4 +72,50 @@ body {
     height: 100px; 
     width: 100px; 
     vertical-align: middle;
+}
+
+#resetGame {
+    padding: 15px 30px;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+
+body {
+    display: flex;  
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: auto;
+}
+
+
+
+/* Path: MADE BY :) HIHI */
+
+footer p {
+    color: black;
+    text-align: center; /* center the text */
+    
+    padding: 10px;
+}
+
+footer a {
+    color: black;
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
 }
