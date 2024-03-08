@@ -3,7 +3,7 @@ const previousNumbersDisplay = document.getElementById('previousNumbers');
 const currentNumberDisplay = document.getElementById('currentNumber');
 const callButton = document.getElementById('callNumber');
 
-for (let i = 1; i <= 75; i++) {
+for (let i = 1; i <= 100; i++) {
     numbers.push(i);
 }
 
