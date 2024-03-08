@@ -6,7 +6,7 @@ let previousNumbers = JSON.parse(localStorage.getItem('previousNumbers')) || [];
 let numbers = JSON.parse(localStorage.getItem('numbers')) || [];
 
 if (numbers.length === 0) {
-    for (let i = 1; i <= 100; i++) {
+    for (let i = 1; i <= 90; i++) {
         if (!previousNumbers.includes(i)) {
             numbers.push(i);
         }
@@ -47,7 +47,7 @@ resetButton.addEventListener('click', function() {
     localStorage.clear();
     numbers = [];
     previousNumbers = [];
-    for (let i = 1; i <= 100; i++) {
+    for (let i = 1; i <= 90; i++) {
         numbers.push(i);
     }
     shuffle(numbers);
