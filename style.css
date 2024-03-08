@@ -1,0 +1,75 @@
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f8f8f8;
+    height: 100vh; /* Set full viewport height */
+}
+
+.header {
+    background-color: red;
+    color: white;
+    width: 100%;
+    padding: 20px;
+    text-align: center;
+    font-size: 24px; /* Adjusted header font size */
+}
+
+.bingo-caller {
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 600px; /* Set fixed width for bingo caller */
+}
+
+#currentNumber {
+    font-size: 72px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    padding: 20px;
+    border: 3px solid red;
+    border-radius: 8px;
+    background-color: #f0f0f0;
+}
+
+#callNumber {
+    padding: 15px 30px;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+#previousNumbers {
+    width: 100%; 
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    font-size: 16px;
+}
+
+.previous-number {
+    display: inline-block;
+    margin: 8px;
+    padding: 10px 15px;
+    background-color: #e0e0e0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+
+#logo {
+    height: 100px; 
+    width: 100px; 
+    vertical-align: middle;
+}
