@@ -26,12 +26,16 @@ callButton.addEventListener('click', function() {
         const nextNumber = numbers.pop();
         currentNumberDisplay.textContent = nextNumber;
 
-        const numberSpan = document.createElement('span');
-        numberSpan.textContent = nextNumber;
-        numberSpan.classList.add('previous-number');
-        previousNumbersDisplay.appendChild(numberSpan);
-
         previousNumbers.push(nextNumber);
+        previousNumbers.sort((a, b) => a - b); 
+
+        previousNumbersDisplay.textContent = ''; 
+        previousNumbers.forEach(number => { 
+            const numberSpan = document.createElement('span');
+            numberSpan.textContent = number;
+            numberSpan.classList.add('previous-number');
+            previousNumbersDisplay.appendChild(numberSpan);
+        });
     } else {
         currentNumberDisplay.textContent = "Game Over!";
         callButton.disabled = true;
