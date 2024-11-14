@@ -16,7 +16,7 @@ const TEMPLATES = {
         headerTitle: 'BINGO',
         logoUrl: 'Bingo.png',
         autoDrawTime: 3,
-        totalNumbers: 90
+        totalNumbers: 75
     },
     duborg: {
         headerColor: '#ff4b4b',
