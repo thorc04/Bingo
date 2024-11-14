@@ -12,7 +12,7 @@ const resetSettingsBtn = document.getElementById('resetSettings');
 // Templates
 const TEMPLATES = {
     default: {
-        headerColor: '#ff4b4b',
+        headerColor: '#000000',
         headerTitle: 'BINGO',
         logoUrl: 'Bingo.png',
         autoDrawTime: 3,
