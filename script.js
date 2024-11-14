@@ -1,17 +1,52 @@
 const previousNumbersDisplay = document.getElementById('previousNumbers');
+const autoPlayButton = document.getElementById('autoPlay');
 const currentNumberDisplay = document.getElementById('currentNumber');
 const callButton = document.getElementById('callNumber');
+const numbersCalled = document.getElementById('numbersCalled');
+const settingsIcon = document.getElementById('settingsIcon');
+const settingsModal = document.getElementById('settingsModal');
+const closeBtn = document.querySelector('.close');
+const saveSettingsBtn = document.getElementById('saveSettings');
+const resetSettingsBtn = document.getElementById('resetSettings');
+
+// Templates
+const TEMPLATES = {
+    default: {
+        headerColor: '#ff4b4b',
+        headerTitle: 'BINGO',
+        logoUrl: 'Bingo.png',
+        autoDrawTime: 3,
+        totalNumbers: 90
+    },
+    duborg: {
+        headerColor: '#ff4b4b',
+        headerTitle: 'Duborg Bingo Aften',
+        logoUrl: 'logo1.png',
+        autoDrawTime: 3,
+        totalNumbers: 90
+    }
+};
+
+// Default settings uses duborg template initially
+const DEFAULT_SETTINGS = TEMPLATES.default;
+// Current settings
+let settings = JSON.parse(localStorage.getItem('bingoSettings')) || DEFAULT_SETTINGS;
 
 let previousNumbers = JSON.parse(localStorage.getItem('previousNumbers')) || [];
 let numbers = JSON.parse(localStorage.getItem('numbers')) || [];
+let autoPlayInterval = null;
 
+// Initialize if needed
 if (numbers.length === 0) {
-    for (let i = 1; i <= 90; i++) {
-        if (!previousNumbers.includes(i)) {
-            numbers.push(i);
-        }
-    }
+    initializeNumbers();
+}
+
+function initializeNumbers() {
+    numbers = Array.from({length: settings.totalNumbers}, (_, i) => i + 1);
     shuffle(numbers);
+    previousNumbers = [];
+    updateUI();
+    saveState();
 }
 
 function shuffle(array) {
@@ -21,52 +56,169 @@ function shuffle(array) {
     }
 }
 
-callButton.addEventListener('click', function() {
+function drawNumber() {
     if (numbers.length > 0) {
+        playDrawSound();
         const nextNumber = numbers.pop();
-        currentNumberDisplay.textContent = nextNumber;
-
         previousNumbers.push(nextNumber);
-        previousNumbers.sort((a, b) => a - b); 
-
-        previousNumbersDisplay.textContent = ''; 
-        previousNumbers.forEach(number => { 
-            const numberSpan = document.createElement('span');
-            numberSpan.textContent = number;
-            numberSpan.classList.add('previous-number');
-            previousNumbersDisplay.appendChild(numberSpan);
-        });
-    } else {
-        currentNumberDisplay.textContent = "Game Over!";
-        callButton.disabled = true;
+        previousNumbers.sort((a, b) => a - b);
+        updateUI();
+        saveState();
+        
+        if (numbers.length === 0) {
+            clearInterval(autoPlayInterval);
+            autoPlayInterval = null;
+            autoPlayButton.innerHTML = '<i class="fas fa-play"></i> Auto Play';
+        }
     }
+}
 
-    localStorage.setItem('numbers', JSON.stringify(numbers));
-    localStorage.setItem('previousNumbers', JSON.stringify(previousNumbers));
-});
-
-const resetButton = document.getElementById('resetGame');
-
-resetButton.addEventListener('click', function() {
-    localStorage.clear();
-    numbers = [];
-    previousNumbers = [];
-    for (let i = 1; i <= 90; i++) {
-        numbers.push(i);
-    }
-    shuffle(numbers);
-    currentNumberDisplay.textContent = "";
-    previousNumbersDisplay.textContent = "";
-    callButton.disabled = false;
-});
-
-// Load previous numbers on page load
-window.onload = function() {
+function updateUI() {
+    currentNumberDisplay.textContent = numbers.length > 0 ? 
+        previousNumbers[previousNumbers.length - 1] : 'Game Over!';
+    
+    numbersCalled.textContent = previousNumbers.length;
+    document.getElementById('totalNumbersDisplay').textContent = settings.totalNumbers;
+    
+    previousNumbersDisplay.innerHTML = '';
     previousNumbers.forEach(number => {
         const numberSpan = document.createElement('span');
         numberSpan.textContent = number;
         numberSpan.classList.add('previous-number');
         previousNumbersDisplay.appendChild(numberSpan);
     });
-};
+}
 
+function toggleAutoPlay() {
+    if (numbers.length === 0) {
+        alert('No more numbers to draw!');
+        return;
+    }
+
+    if (autoPlayInterval) {
+        clearInterval(autoPlayInterval);
+        autoPlayInterval = null;
+        autoPlayButton.innerHTML = '<i class="fas fa-play"></i> Auto Play';
+    } else {
+        drawNumber();
+        autoPlayInterval = setInterval(drawNumber, settings.autoDrawTime * 1000);
+        autoPlayButton.innerHTML = '<i class="fas fa-pause"></i> Pause';
+    }
+}
+
+function resetGame() {
+    clearInterval(autoPlayInterval);
+    autoPlayInterval = null;
+    autoPlayButton.innerHTML = '<i class="fas fa-play"></i> Auto Play';
+    initializeNumbers();
+}
+
+function saveState() {
+    localStorage.setItem('numbers', JSON.stringify(numbers));
+    localStorage.setItem('previousNumbers', JSON.stringify(previousNumbers));
+}
+
+function playDrawSound() {
+    const audio = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-select-click-1109.mp3');
+    audio.play();
+}
+
+function loadSettings() {
+    const currentTemplate = settings.headerTitle === TEMPLATES.duborg.headerTitle ? 'duborg' : 'default';
+    document.getElementById('templateSelect').value = currentTemplate;
+    document.getElementById('headerColor').value = settings.headerColor;
+    document.getElementById('headerTitle').value = settings.headerTitle;
+    document.getElementById('autoDrawTime').value = settings.autoDrawTime;
+    document.getElementById('totalNumbers').value = settings.totalNumbers;
+    
+    // Clear file input and URL input
+    document.getElementById('logoUpload').value = '';
+    document.getElementById('logoUrl').value = '';
+    // Show current logo path
+    document.getElementById('currentLogoPath').textContent = settings.logoUrl;
+    
+    applySettings();
+}
+
+function saveSettings() {
+    settings.headerColor = document.getElementById('headerColor').value;
+    settings.headerTitle = document.getElementById('headerTitle').value;
+    settings.autoDrawTime = parseInt(document.getElementById('autoDrawTime').value);
+    settings.totalNumbers = parseInt(document.getElementById('totalNumbers').value);
+    
+    const logoUrlInput = document.getElementById('logoUrl').value;
+    const logoUpload = document.getElementById('logoUpload').files[0];
+    
+    if (logoUpload) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            settings.logoUrl = e.target.result;
+            saveSettingsToStorage();
+        };
+        reader.readAsDataURL(logoUpload);
+    } else if (logoUrlInput) {
+        settings.logoUrl = logoUrlInput;
+        saveSettingsToStorage();
+    } else {
+        saveSettingsToStorage();
+    }
+}
+
+function saveSettingsToStorage() {
+    localStorage.setItem('bingoSettings', JSON.stringify(settings));
+    applySettings();
+    settingsModal.style.display = "none";
+    initializeNumbers();
+}
+
+function resetSettings() {
+    settings = {...DEFAULT_SETTINGS};
+    localStorage.setItem('bingoSettings', JSON.stringify(settings));
+    loadSettings();
+    initializeNumbers();
+}
+
+function applySettings() {
+    document.querySelector('.header').style.background = 
+        `linear-gradient(to right, ${settings.headerColor}, ${adjustColor(settings.headerColor, -30)})`;
+    document.querySelector('#headerTitleDisplay').textContent = settings.headerTitle;
+    document.getElementById('logo').src = settings.logoUrl;
+    document.getElementById('totalNumbersDisplay').textContent = settings.totalNumbers;
+}
+
+function adjustColor(color, amount) {
+    return '#' + color.replace(/^#/, '').replace(/../g, color => 
+        ('0' + Math.min(255, Math.max(0, parseInt(color, 16) + amount)).toString(16)).slice(-2));
+}
+
+// Template change handler
+document.getElementById('templateSelect').addEventListener('change', function(e) {
+    settings = {...TEMPLATES[e.target.value]};
+    loadSettings();
+});
+
+// Event listeners
+settingsIcon.addEventListener('click', () => {
+    settingsModal.style.display = "block";
+    loadSettings();
+});
+
+closeBtn.addEventListener('click', () => {
+    settingsModal.style.display = "none";
+});
+
+window.addEventListener('click', (event) => {
+    if (event.target == settingsModal) {
+        settingsModal.style.display = "none";
+    }
+});
+
+saveSettingsBtn.addEventListener('click', saveSettings);
+resetSettingsBtn.addEventListener('click', resetSettings);
+callButton.addEventListener('click', drawNumber);
+autoPlayButton.addEventListener('click', toggleAutoPlay);
+document.getElementById('resetGame').addEventListener('click', resetGame);
+
+// Initialize
+applySettings();
+updateUI();

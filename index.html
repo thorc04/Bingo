@@ -9,24 +9,83 @@
 </head>
 <body>
     <header class="header">
-        <h1>Duborg Bingo Aften<img src="logo1.png" id="logo"></h1>
-        
+        <div class="settings-icon">
+            <i class="fas fa-cog" id="settingsIcon"></i>
+        </div>
+        <h1><span id="headerTitleDisplay">Duborg Bingo Aften</span><img src="Bingo.png" id="logo" alt="Bingo Logo"></h1>
     </header>
+
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Settings</h2>
+            <div class="settings-grid">
+                <div class="setting-item">
+                    <label for="templateSelect">Template:</label>
+                    <select id="templateSelect" class="settings-select">
+                        <option value="default">Default Bingo</option>
+                        <option value="duborg">Duborg Skolen</option>
+                    </select>
+                </div>
+                <div class="setting-item">
+                    <label for="headerColor">Header Color:</label>
+                    <input type="color" id="headerColor" value="#ff4b4b">
+                </div>
+                <div class="setting-item">
+                    <label for="headerTitle">Header Title:</label>
+                    <input type="text" id="headerTitle" value="Duborg Bingo Aften">
+                </div>
+                <div class="setting-item">
+                    <label for="logoUpload">Logo Image:</label>
+                    <input type="file" id="logoUpload" accept="image/*" class="mb-2">
+                    <div class="url-input">
+                        <span class="or-divider">OR</span>
+                        <input type="text" id="logoUrl" placeholder="Enter image URL (e.g., https://example.com/image.png)">
+                    </div>
+
+                </div>
+                </div>
+                <div class="setting-item">
+                    <label for="autoDrawTime">Auto Draw Time (seconds):</label>
+                    <input type="number" id="autoDrawTime" value="3" min="1" max="10">
+                </div>
+                <div class="setting-item">
+                    <label for="totalNumbers">Total Numbers:</label>
+                    <input type="number" id="totalNumbers" value="90" min="1" max="99">
+                </div>
+                <div class="settings-buttons">
+                    <button id="saveSettings" class="primary-button">Save Settings</button>
+                    <button id="resetSettings" class="secondary-button">Reset to Default</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <main class="bingo-caller">
-        <div id="currentNumber"></div>
-        <button id="callNumber"><i class="fas fa-dice"></i></button>
-        <div id="previousNumbers"></div>
+        <div class="game-status">
+            <h2>Numbers Called: <span id="numbersCalled">0</span>/<span id="totalNumbersDisplay">90</span></h2>
+        </div>
+        <div id="currentNumber" class="number-display"></div>
+        <div class="control-buttons">
+            <button id="callNumber" class="primary-button">
+                <i class="fas fa-dice"></i> Draw Number
+            </button>
+            <button id="autoPlay" class="secondary-button">
+                <i class="fas fa-play"></i> Auto Play
+            </button>
+            <button id="resetGame" class="reset-button">
+                <i class="fas fa-redo-alt"></i> Reset Game
+            </button>
+        </div>
+        <div class="numbers-section">
+            <h3>Previous Numbers</h3>
+            <div id="previousNumbers" class="previous-numbers-grid"></div>
+        </div>
     </main>
 
-
     <footer>
-        <main class="bingo-reset">
-            <button id="resetGame"><i class="fas fa-redo-alt"></i> Reset Game</button>
-        </main>
-        <p>&copy; <a href="https://shelfsorter.com/" target="_blank">Windstar343.dev</a></p>
+        <p>&copy; 2024 Duborg Bingo</p>
     </footer>
     <script src="script.js"></script>
 </body>
 </html>
-
-
