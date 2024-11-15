@@ -9,7 +9,6 @@ const closeBtn = document.querySelector('.close');
 const saveSettingsBtn = document.getElementById('saveSettings');
 const resetSettingsBtn = document.getElementById('resetSettings');
 
-// Templates
 const TEMPLATES = {
     default: {
         headerColor: '#000000',
@@ -27,16 +26,13 @@ const TEMPLATES = {
     }
 };
 
-// Default settings uses duborg template initially
 const DEFAULT_SETTINGS = TEMPLATES.default;
-// Current settings
 let settings = JSON.parse(localStorage.getItem('bingoSettings')) || DEFAULT_SETTINGS;
 
 let previousNumbers = JSON.parse(localStorage.getItem('previousNumbers')) || [];
 let numbers = JSON.parse(localStorage.getItem('numbers')) || [];
 let autoPlayInterval = null;
 
-// Initialize if needed
 if (numbers.length === 0) {
     initializeNumbers();
 }
@@ -131,10 +127,8 @@ function loadSettings() {
     document.getElementById('autoDrawTime').value = settings.autoDrawTime;
     document.getElementById('totalNumbers').value = settings.totalNumbers;
     
-    // Clear file input and URL input
     document.getElementById('logoUpload').value = '';
     document.getElementById('logoUrl').value = '';
-    // Show current logo path
     document.getElementById('currentLogoPath').textContent = settings.logoUrl;
     
     applySettings();
@@ -191,13 +185,11 @@ function adjustColor(color, amount) {
         ('0' + Math.min(255, Math.max(0, parseInt(color, 16) + amount)).toString(16)).slice(-2));
 }
 
-// Template change handler
 document.getElementById('templateSelect').addEventListener('change', function(e) {
     settings = {...TEMPLATES[e.target.value]};
     loadSettings();
 });
 
-// Event listeners
 settingsIcon.addEventListener('click', () => {
     settingsModal.style.display = "block";
     loadSettings();
