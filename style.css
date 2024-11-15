@@ -196,3 +196,13 @@ footer {
     margin: 0.5rem 0;
     font-size: 0.9rem;
 }
+
+
+/* BUTTON DEACTIVATE BECAUSE OF AN ERROR*/
+
+.disabled-button {
+    background-color: #d3d3d3; 
+    color: #a9a9a9; 
+    cursor: not-allowed; 
+    border: 1px solid #a9a9a9; 
+}
