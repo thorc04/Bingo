@@ -8,6 +8,7 @@ const settingsModal = document.getElementById('settingsModal');
 const closeBtn = document.querySelector('.close');
 const saveSettingsBtn = document.getElementById('saveSettings');
 const resetSettingsBtn = document.getElementById('resetSettings');
+let lastdrawnNumber = undefined;
 
 const TEMPLATES = {
     default: {
@@ -56,6 +57,7 @@ function drawNumber() {
     if (numbers.length > 0) {
         playDrawSound();
         const nextNumber = numbers.pop();
+        lastdrawnNumber = nextNumber;
         previousNumbers.push(nextNumber);
         previousNumbers.sort((a, b) => a - b);
         updateUI();
@@ -71,7 +73,7 @@ function drawNumber() {
 
 function updateUI() {
     currentNumberDisplay.textContent = numbers.length > 0 ? 
-        previousNumbers[previousNumbers.length - 1] : 'Game Over!';
+        lastdrawnNumber : 'Game Over!';
     
     numbersCalled.textContent = previousNumbers.length;
     document.getElementById('totalNumbersDisplay').textContent = settings.totalNumbers;
