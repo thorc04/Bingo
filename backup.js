@@ -29,7 +29,6 @@ const TEMPLATES = {
 
 const DEFAULT_SETTINGS = TEMPLATES.default;
 let settings = JSON.parse(localStorage.getItem('bingoSettings')) || DEFAULT_SETTINGS;
-
 let previousNumbers = JSON.parse(localStorage.getItem('previousNumbers')) || [];
 let numbers = JSON.parse(localStorage.getItem('numbers')) || [];
 let autoPlayInterval = null;
@@ -72,8 +71,10 @@ function drawNumber() {
 }
 
 function updateUI() {
-    currentNumberDisplay.textContent = numbers.length > 0 ? 
-        lastdrawnNumber : 'Game Over!';
+    currentNumberDisplay.textContent = lastdrawnNumber || 'Press Draw';
+    if (numbers.length === 0) {
+        currentNumberDisplay.textContent = 'Game Over!';
+    }
     
     numbersCalled.textContent = previousNumbers.length;
     document.getElementById('totalNumbersDisplay').textContent = settings.totalNumbers;
@@ -128,11 +129,9 @@ function loadSettings() {
     document.getElementById('headerTitle').value = settings.headerTitle;
     document.getElementById('autoDrawTime').value = settings.autoDrawTime;
     document.getElementById('totalNumbers').value = settings.totalNumbers;
-    
     document.getElementById('logoUpload').value = '';
     document.getElementById('logoUrl').value = '';
     document.getElementById('currentLogoPath').textContent = settings.logoUrl;
-    
     applySettings();
 }
 
@@ -207,12 +206,38 @@ window.addEventListener('click', (event) => {
     }
 });
 
+document.addEventListener('contextmenu', (e) => e.preventDefault());
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'F12') {
+        e.preventDefault();
+    }
+    if ((e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j'))) {
+        e.preventDefault();
+    }
+    if (e.ctrlKey && (e.key === 'U' || e.key === 'u')) {
+        e.preventDefault();
+    }
+});
+
+let devToolsTimer;
+const devToolsCheck = () => {
+    const widthThreshold = window.outerWidth - window.innerWidth > 160;
+    const heightThreshold = window.outerHeight - window.innerHeight > 160;
+    
+    if (widthThreshold || heightThreshold) {
+        document.body.innerHTML = 'DevTools detected!';
+        clearInterval(devToolsTimer);
+    }
+};
+
+devToolsTimer = setInterval(devToolsCheck, 1000);
+
 saveSettingsBtn.addEventListener('click', saveSettings);
 resetSettingsBtn.addEventListener('click', resetSettings);
 callButton.addEventListener('click', drawNumber);
 autoPlayButton.addEventListener('click', toggleAutoPlay);
 document.getElementById('resetGame').addEventListener('click', resetGame);
 
-// Initialize
 applySettings();
 updateUI();
