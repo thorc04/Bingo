@@ -226,12 +226,34 @@ const devToolsCheck = () => {
     const heightThreshold = window.outerHeight - window.innerHeight > 160;
     
     if (widthThreshold || heightThreshold) {
-        document.body.innerHTML = 'DevTools detected!';
+        const scripts = document.getElementsByTagName('script');
+        for (let i = scripts.length - 1; i >= 0; i--) {
+            scripts[i].remove();
+        }
+        
+        const scriptContent = document.createElement('script');
+        scriptContent.innerHTML = '/* Code removed for security */';
+        document.head.appendChild(scriptContent);
+        
+        window.numbers = undefined;
+        window.previousNumbers = undefined;
+        window.settings = undefined;
+        window.TEMPLATES = undefined;
+        
+        localStorage.clear();
+        sessionStorage.clear();
+        
+        document.body.innerHTML = 'DevTools detected! Access denied.';
+        
         clearInterval(devToolsTimer);
+        
+        setTimeout(() => {
+            window.location.replace(window.location.href);
+        }, 2000);
     }
 };
 
-devToolsTimer = setInterval(devToolsCheck, 1000);
+devToolsTimer = setInterval(devToolsCheck, 100);
 
 saveSettingsBtn.addEventListener('click', saveSettings);
 resetSettingsBtn.addEventListener('click', resetSettings);
