@@ -29,6 +29,7 @@ const TEMPLATES = {
 
 const DEFAULT_SETTINGS = TEMPLATES.default;
 let settings = JSON.parse(localStorage.getItem('bingoSettings')) || DEFAULT_SETTINGS;
+
 let previousNumbers = JSON.parse(localStorage.getItem('previousNumbers')) || [];
 let numbers = JSON.parse(localStorage.getItem('numbers')) || [];
 let autoPlayInterval = null;
@@ -71,10 +72,8 @@ function drawNumber() {
 }
 
 function updateUI() {
-    currentNumberDisplay.textContent = lastdrawnNumber || 'Press Draw';
-    if (numbers.length === 0) {
-        currentNumberDisplay.textContent = 'Game Over!';
-    }
+    currentNumberDisplay.textContent = numbers.length > 0 ? 
+        lastdrawnNumber : 'Game Over!';
     
     numbersCalled.textContent = previousNumbers.length;
     document.getElementById('totalNumbersDisplay').textContent = settings.totalNumbers;
@@ -129,9 +128,11 @@ function loadSettings() {
     document.getElementById('headerTitle').value = settings.headerTitle;
     document.getElementById('autoDrawTime').value = settings.autoDrawTime;
     document.getElementById('totalNumbers').value = settings.totalNumbers;
+    
     document.getElementById('logoUpload').value = '';
     document.getElementById('logoUrl').value = '';
     document.getElementById('currentLogoPath').textContent = settings.logoUrl;
+    
     applySettings();
 }
 
@@ -206,60 +207,12 @@ window.addEventListener('click', (event) => {
     }
 });
 
-document.addEventListener('contextmenu', (e) => e.preventDefault());
-
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'F12') {
-        e.preventDefault();
-    }
-    if ((e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j'))) {
-        e.preventDefault();
-    }
-    if (e.ctrlKey && (e.key === 'U' || e.key === 'u')) {
-        e.preventDefault();
-    }
-});
-
-let devToolsTimer;
-const devToolsCheck = () => {
-    const widthThreshold = window.outerWidth - window.innerWidth > 160;
-    const heightThreshold = window.outerHeight - window.innerHeight > 160;
-    
-    if (widthThreshold || heightThreshold) {
-        const scripts = document.getElementsByTagName('script');
-        for (let i = scripts.length - 1; i >= 0; i--) {
-            scripts[i].remove();
-        }
-        
-        const scriptContent = document.createElement('script');
-        scriptContent.innerHTML = '/* Code removed for security */';
-        document.head.appendChild(scriptContent);
-        
-        window.numbers = undefined;
-        window.previousNumbers = undefined;
-        window.settings = undefined;
-        window.TEMPLATES = undefined;
-        
-        localStorage.clear();
-        sessionStorage.clear();
-        
-        document.body.innerHTML = 'DevTools detected! Access denied.';
-        
-        clearInterval(devToolsTimer);
-        
-        setTimeout(() => {
-            window.location.replace(window.location.href);
-        }, 2000);
-    }
-};
-
-devToolsTimer = setInterval(devToolsCheck, 100);
-
 saveSettingsBtn.addEventListener('click', saveSettings);
 resetSettingsBtn.addEventListener('click', resetSettings);
 callButton.addEventListener('click', drawNumber);
 autoPlayButton.addEventListener('click', toggleAutoPlay);
 document.getElementById('resetGame').addEventListener('click', resetGame);
 
+// Initialize
 applySettings();
 updateUI();
